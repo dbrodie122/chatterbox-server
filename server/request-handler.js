@@ -50,19 +50,6 @@ var requestHandler = function(request, response) {
       console.error('Error on response:', err);
     });
 
-    // if POST request, store message
-    if (request.method === 'POST' && request.url === '/classes/messages') {
-      // add the body as an object to the messages []
-      messages.push(body);
-      response.statusCode = 201;
-
-    } else if (request.method === 'GET' && request.url === '/classes/messages') {
-      // messages.push(body);
-      response.statusCode = 200;
-    } else {
-      response.statusCode = 404;
-    }
-    
     response.setHeader('Content-Type', 'application/json');
     // Note: the 2 lines above could be replaced with this next one:
     // response.writeHead(200, {'Content-Type': 'application/json'})
@@ -74,9 +61,31 @@ var requestHandler = function(request, response) {
       body: body,
       results: messages
     };
-    console.log('Response body: ', responseBody);
-    response.write(JSON.stringify(responseBody));
-    response.end();
+
+  
+    // if POST request, store message
+    if (request.method === 'POST' && request.url === '/classes/messages') {
+      // add the body as an object to the messages []
+      console.log('***************************************************** POST request ************');
+      console.log('Response body: ', responseBody);
+      messages.push(JSON.parse(body));
+      response.statusCode = 201;
+      response.write(JSON.stringify(responseBody));
+      response.end();
+
+    } else if (request.method === 'GET' && request.url === '/classes/messages') {
+      console.log('********************************* GET request ************');
+      console.log('Response body: ', responseBody);
+      response.statusCode = 200;
+      response.write(JSON.stringify(responseBody));
+      response.end();
+
+    } else {
+      response.statusCode = 404;
+      response.end();
+    }
+
+  
     // Note: the 2 lines above could be replaced with this next one:
     // response.end(JSON.stringify(responseBody))
 
